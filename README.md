@@ -8,6 +8,9 @@
 
 ![Arquitectura](diagrama1.png)
 
+# Video Explicativo
+[Link Youtube](https://youtu.be/XbtOCrq9S6A)
+
 # Servicios Disponibles
 ## Solicitud
 #### Funcionalidad

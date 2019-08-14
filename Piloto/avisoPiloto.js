@@ -50,6 +50,7 @@ app.post('/avisarPiloto', (req, res) => {
  */
 function inicializarData() {
     listaPilotos = [];
+    // ubicacion, idPiloto, idAuto, NombrePiloto
     listaPilotos.push(new Piloto("Paseo Sexta", 1, 2, "Pedro"));
     listaPilotos.push(new Piloto("Mixco", 2, 3, "Juan"));
     listaPilotos.push(new Piloto("Zona 12", 3, 4, "Jorge"));
