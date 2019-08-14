@@ -6,7 +6,6 @@
 - Estos servicios a su vez se comunican con el _Enterprise Service Bus_ (ESB) el cual es el encargado de hacer uso de los servicios para resolver las peticiones hechas.
 - Existe un cliente que se comunica exclusivamente con el _ESB_ para procesar las peticiones.
 
-Arquitectura de la aplicación
 ![Arquitectura](diagrama1.png)
 
 # Servicios Disponibles
