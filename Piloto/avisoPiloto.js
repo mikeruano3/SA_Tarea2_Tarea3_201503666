@@ -43,7 +43,7 @@ function inicializarData() {
 }
 
 /*** 
- * Iniciar el servidor en puerto 4545
+ * Iniciar el servidor en puerto 302
  */
 app.listen(302, () => {
     inicializarData();

@@ -8,7 +8,23 @@ function hacerPost(url, postDatos){
         return {"estado": "OK", "datos": response.data};
       })
       .catch((err) => {
-        return {"estado": "ERROR", "causa": "No existe respuesta de la URL: "+url};
+        return {"estado": "ERROR", "causa": "No existe respuesta de la URL: "+url+ " " +err};
     });
 }
 
+
+const Url = 'http://localhost/pedirUber/';
+const body = {"ubicacion": "Mixco"};
+hacerPost(Url, body)
+    .then((datosUber) => {
+        if(datosUber.estado == "ERROR"){
+            console.log(datosUber.causa);
+            return;
+        }
+        console.log(datosUber.datos);
+        return;
+    })
+    .catch((err) => { 
+        return err;
+    }
+);
