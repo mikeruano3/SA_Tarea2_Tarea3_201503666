@@ -1,3 +1,4 @@
+// incluir dependencias
 const express = require("express");
 var Auto = require("./auto");
 const app = express();
@@ -10,39 +11,57 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var listaAutos = [];
 
 /** 
- * RUTA QUE RECIBIRA LA SOLICITUD 
- * param req : se enviará a través de un método POST
- *          la ubicación a la que el cliente quiere ir
- * 
- * 1- idPiloto
+ ** metodo GET - UbicarAuto. 
+ * Recibirá el id del piloto dueño del vehículo y se enviará
+ * información sobre la ubicación del mismo
+ * param 
+ * @string req : contiene la informacion del request
+ * @String res : contiene los datos de la petición
+ * return
+ * @json propiedades : devuelve la información y la ubicación del vehículo
  */
 app.get('/ubicarAuto/:idPiloto', (req, res) => {
     if(req.params.idPiloto == undefined){
         res.status(500);
         res.send("Algo salió mal!");    
     }
-    let idAuto = -1, idPiloto = -1, direccion = "";
+    let datosAuto = new Auto("", 0, "", "", "");
+    // se itera hasta encontrar un piloto que coincida con el numero dado
     for (let i = 0; i < listaAutos.length; i++) { 
         if(listaAutos[i].idPiloto == req.params.idPiloto){
-            idAuto = listaAutos[i].idAuto;
-            idPiloto = listaAutos[i].idPiloto;
-            direccion = listaAutos[i].direccion;
+            datosAuto = listaAutos[i];
         }
     }
-    let propiedades = { "idAuto": idAuto, "idPiloto": idPiloto, "direccion": direccion};
+    // Devuelve las propiedades encontradas
+    let propiedades = { "placaAuto": datosAuto.idAuto, 
+                        "idPiloto": datosAuto.idPiloto, 
+                        "direccion": datosAuto.direccion,
+                        "modelo": datosAuto.modelo};
     res.send(propiedades);
 });
 
+/** 
+ ** metodo inicializarData
+ * Crea una lista con los datos que se manejarán
+ * Simula una base de datos
+ * param 
+ * return
+ */
 function inicializarData() {
     listaAutos = [];
-    listaAutos.push(new Auto("Paseo Sexta", 1, 2, "6 av 7 calle"));
-    listaAutos.push(new Auto("Mixco", 2, 3, "4 av 7 calle"));
-    listaAutos.push(new Auto("Zona 12", 3, 4, "5 av 8 calle"));
-    listaAutos.push(new Auto("Zona 4", 4, 5, "7 av 10 calle"));
+    listaAutos.push(new Auto("Paseo Sexta", 1, "523123", "6 av 7 calle", "Toyota"));
+    listaAutos.push(new Auto("Mixco", 2, "123123", "4 av 7 calle", "Hyunday"));
+    listaAutos.push(new Auto("Zona 12", 3, "12321", "5 av 8 calle", "Mercedez"));
+    listaAutos.push(new Auto("Zona 4", 4, "23122", "7 av 10 calle", "Ford"));
 }
 
-/*** 
- * Iniciar el servidor en puerto 4545
+/** 
+ ** metodo appListen
+ * Inicia el servidor para la recepción de datos
+ * Simula una base de datos
+ * param 
+ * @number es el número de puerto en el que se inicia la aplicación
+ * return
  */
 app.listen(303, () => {
     inicializarData();
