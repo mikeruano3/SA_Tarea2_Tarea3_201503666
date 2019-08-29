@@ -1,4 +1,5 @@
 // incluir dependencias
+/**************************************************************/
 const express = require("express");
 var Piloto = require("./piloto");
 const app = express();
@@ -21,23 +22,30 @@ var listaPilotos = [];
  * @json propiedades : devuelve el id y el nombre del piloto
  * para proseguir con el viaje
  */
-app.post('/avisarPiloto', (req, res) => {
-    if(req.body.ubicacion == undefined){
+ /*****************************************************************/
+app.get('/avisarPiloto', (req, res) => {
+	console.log("recibiendo llamada....");
+    if(req.query.ubicacion == undefined){
         res.status(500);
         res.send("Algo salió mal!");    
     }
     // se itera hasta encontrar un piloto que coincida con la ubicación dada
     let idAuto = -1, idPiloto = -1, nombrePiloto = "";
     for (let i = 0; i < listaPilotos.length; i++) { 
-        if(listaPilotos[i].ubicacion.toString().toLowerCase() == req.body.ubicacion.toLowerCase()){
+        if(listaPilotos[i].ubicacion.toString().toLowerCase() == req.query.ubicacion.toLowerCase()){
             idAuto = listaPilotos[i].idAuto;
             idPiloto = listaPilotos[i].idPiloto;
             nombrePiloto = listaPilotos[i].nombrePiloto;
         }
     }
     // Devuelve las propiedades encontradas
-    console.log("Enviando mensaje al piloto!!!!");
-    let propiedades = { "idAuto": idAuto, "idPiloto": idPiloto, "nombrePiloto": nombrePiloto };
+    console.log("Enviando mensaje al piloto!!!! "+nombrePiloto);
+    let propiedades = { salida: 
+                        {"idAuto": idAuto, 
+                        "idPiloto": idPiloto, 
+                        "nombrePiloto": nombrePiloto 
+                        }
+                    };
     res.send(propiedades);
 });
 
@@ -48,6 +56,7 @@ app.post('/avisarPiloto', (req, res) => {
  * param 
  * return
  */
+ /*******************************************************************/
 function inicializarData() {
     listaPilotos = [];
     // ubicacion, idPiloto, idAuto, NombrePiloto
@@ -65,7 +74,88 @@ function inicializarData() {
  * @number es el número de puerto en el que se inicia la aplicación
  * return
  */
+ /*****************************************************************/
 app.listen(302, () => {
     inicializarData();
     console.log("Corriendo -- Servidor de aviso al piloto");
 });
+/***************************************************************/
+
+/***** SERVER SOAP ***
+var myService = {
+      Piloto: {
+          PuertoPiloto: {
+              echoInput: function(args) {
+                  return {
+                      name: null
+                  };
+              },
+
+              // This is how to define an asynchronous function with a callback.
+              MyAsyncFunction: function(args, callback) {
+                  // do some work
+                  callback({
+                      name: args.name
+                  });
+              },
+
+              // This is how to define an asynchronous function with a Promise.
+              MyPromiseFunction: function(args) {
+                  return new Promise((resolve) => {
+                    // do some work
+                    resolve({
+                      name: args.name
+                    });
+                  });
+              },
+
+              // This is how to receive incoming headers
+              HeadersAwareFunction: function(args, cb, headers) {
+                  return {
+                      name: headers.Token
+                  };
+              },
+
+              // You can also inspect the original `req`
+              reallyDetailedFunction: function(args, cb, headers, req) {
+                  console.log('SOAP `reallyDetailedFunction` request from ' + req.connection.remoteAddress);
+                  return {
+                      name: headers.Token
+                  };
+              }
+          }
+      }
+  };
+
+  var xml = require('fs').readFileSync('myservice.wsdl', 'utf8');
+
+//http server example
+/***
+  var server = http.createServer(function(request,response) {
+      response.end('404: Not Found: ' + request.url);
+  });
+
+  server.listen(8000);
+  soap.listen(server, '/wsdl', myService, xml, function(){
+    console.log('server initialized');
+  });
+****
+  //express server example
+
+const express = require('express')
+const bodyParser = require('body-parser');
+var app = express();
+var soap = require('soap');
+
+
+  //body parser middleware are supported (optional)
+app.use(bodyParser.raw({type: function(){return true;}, limit: '5mb'}));
+app.listen(8001, function(){
+      //Note: /wsdl route will be handled by soap module
+      //and all other routes & middleware will continue to work
+    soap.listen(app, '/wsdl', myService, xml, function(){
+        console.log('server initialized');
+    });
+})
+
+*/

@@ -19,8 +19,8 @@ var listaRutas = [];
  * return
  * @json propiedades : devuelve la cantidad de viajes para la ubicación
  */
-app.post('/solicitarViaje', (req, res) => {
-    if(req.body.ubicacion == undefined){
+app.get('/solicitarViaje', (req, res) => {
+    if(req.query.ubicacion == undefined){
         res.status(500);
         res.send("Algo salió mal!");    
     }
@@ -28,10 +28,11 @@ app.post('/solicitarViaje', (req, res) => {
     // se itera hasta encontrar un viaje en la ruta indicada
     for (let i = 0; i < listaRutas.length; i++) { 
         // Compara para saber si existe algún viaje en la ruta indicada
-        if(listaRutas[i].ubicacion.toString().toLowerCase() == req.body.ubicacion.toLowerCase()){
+        if(listaRutas[i].ubicacion.toString().toLowerCase() == req.query.ubicacion.toLowerCase()){
             cantViajes = listaRutas[i].noAutosEnUbicacion;
         }
     }
+    console.log("Viaje Solicitado "+req.query.ubicacion);
     // Se devuelve el numero de viajes
     var propiedades = { "cantViajes": cantViajes };
     res.send(propiedades);

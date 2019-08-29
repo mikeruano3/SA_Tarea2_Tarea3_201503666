@@ -20,23 +20,27 @@ var listaAutos = [];
  * return
  * @json propiedades : devuelve la información y la ubicación del vehículo
  */
-app.get('/ubicarAuto/:idPiloto', (req, res) => {
-    if(req.params.idPiloto == undefined){
+app.get('/ubicarAuto/', (req, res) => {
+    if(req.query.id == undefined){
         res.status(500);
         res.send("Algo salió mal!");    
     }
     let datosAuto = new Auto("", 0, "", "", "");
     // se itera hasta encontrar un piloto que coincida con el numero dado
     for (let i = 0; i < listaAutos.length; i++) { 
-        if(listaAutos[i].idPiloto == req.params.idPiloto){
+        if(listaAutos[i].idPiloto == req.query.id){
             datosAuto = listaAutos[i];
         }
     }
+    console.log("Auto Ubicado!!!! "+datosAuto.modelo);
     // Devuelve las propiedades encontradas
-    let propiedades = { "placaAuto": datosAuto.idAuto, 
+    let propiedades = { salida: 
+                        {"placaAuto": datosAuto.idAuto, 
                         "idPiloto": datosAuto.idPiloto, 
                         "direccion": datosAuto.direccion,
-                        "modelo": datosAuto.modelo};
+                        "modelo": datosAuto.modelo
+                        }
+                    };
     res.send(propiedades);
 });
 

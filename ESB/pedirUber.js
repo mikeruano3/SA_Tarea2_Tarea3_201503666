@@ -8,6 +8,11 @@ app.use(bodyParser.json());
 // para parseo de application/xwww-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true })); 
 
+
+return hacerGet('http://localhost:301/solicitarViaje?ubicacion=mixco')
+return hacerGet('http://localhost:302/avisarPiloto?ubicacion=Mixco')
+return hacerGet('http://localhost:303/ubicarAuto?id=3')
+
 /** 
  ** funcion HACERPOST
  * Recibirá una Url a la cual mandar la petición y los datos a mandar
@@ -62,7 +67,7 @@ function hacerGet(url, getDatos){
  * @json datosPeticion : devuelve la información después de ejecutar la petición
  */
 function ubicarAuto(nombrePiloto, idAuto, idPiloto){
-    return hacerGet('http://localhost:303/ubicarAuto/'+ idPiloto, "")
+    return hacerGet('http://localhost:303/ubicarAuto?id=3')
         .then((datosAuto) => {
             if(datosAuto.estado == "ERROR"){
                 // si hay un error enviarlo
@@ -91,7 +96,7 @@ function ubicarAuto(nombrePiloto, idAuto, idPiloto){
  * @json datosPeticion : devuelve la información después de ejecutar la petición
  */
 function avisarPiloto(ubicacion){
-    return hacerPost('http://localhost:302/avisarPiloto', {"ubicacion": ubicacion})
+    return hacerGet('http://localhost:302/avisarPiloto?ubicacion=Mixco')
         .then((datosPiloto) => {
             if(datosPiloto.estado == "ERROR"){
                 // si hay un error enviarlo
@@ -124,7 +129,7 @@ function avisarPiloto(ubicacion){
  * @json datosPeticion : devuelve la información después de ejecutar la petición
  */
 function solicitarViaje(ubicacion){
-    return hacerPost('http://localhost:301/solicitarViaje', {"ubicacion": ubicacion})
+    return hacerGet('http://localhost:301/solicitarViaje?ubicacion=mixco')
         .then((datosViaje) => {
             if(datosViaje.estado == "ERROR"){
                 // si hay un error enviarlo
