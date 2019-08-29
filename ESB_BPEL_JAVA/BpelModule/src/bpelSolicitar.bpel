@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<process
+    name="bpelSolicitar"
+    targetNamespace="http://enterprise.netbeans.org/bpel/BpelModule/bpelSolicitar"
+    xmlns:tns="http://enterprise.netbeans.org/bpel/BpelModule/bpelSolicitar"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
+    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
+    xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:sxnmp="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/NMProperty">
+    <import namespace="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLSolicitar" location="Archivos/WSDLSolicitar.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaSolicitar" location="Archivos/llamadaSolicitar.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaPiloto" location="Archivos/llamadaPiloto.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <partnerLinks>
+        <partnerLink name="PartnerLink2" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaSolicitar" partnerLinkType="tns:RestOutboundWSDL" partnerRole="RestOutboundPortTypeRole"/>
+        <partnerLink name="PartnerLink1" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLSolicitar" partnerLinkType="tns:RestInboundWSDL" myRole="RestInboundPortTypeRole"/>
+    </partnerLinks>
+    <variables>
+        <variable name="SolicitarViajeOutSALIDA" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLSolicitar" messageType="tns:solicitarViajeResponse"/>
+        <variable name="SolicitarViajeOutInvoker" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaSolicitar" messageType="tns:solicitarViajeResponse"/>
+        <variable name="SolicitarViajeInInvoker" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaSolicitar" messageType="tns:solicitarViajeRequest"/>
+        <variable name="SolicitarViajeIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLSolicitar" messageType="tns:solicitarViajeRequest"/>
+    </variables>
+    <sequence>
+        <receive name="Receive1" createInstance="yes" partnerLink="PartnerLink1" operation="solicitarViaje" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLSolicitar" portType="tns:RestInboundPortType" variable="SolicitarViajeIn"/>
+        <assign name="Assign1">
+            <copy>
+                <from variable="SolicitarViajeIn" sxnmp:nmProperty="org.glassfish.openesb.rest.params"/>
+                <to variable="SolicitarViajeInInvoker" sxnmp:nmProperty="org.glassfish.openesb.rest.params"/>
+            </copy>
+            <copy>
+                <from>''</from>
+                <to variable="SolicitarViajeInInvoker" part="part1"/>
+            </copy>
+        </assign>
+        <invoke name="InvokeSolicitarViaje" partnerLink="PartnerLink2" operation="solicitarViaje" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaSolicitar" portType="tns:RestOutboundPortType" inputVariable="SolicitarViajeInInvoker" outputVariable="SolicitarViajeOutInvoker"/>
+        <assign name="Assign2">
+            <copy>
+                <from variable="SolicitarViajeOutInvoker" part="part1"/>
+                <to variable="SolicitarViajeOutSALIDA" part="part1"/>
+            </copy>
+        </assign>
+        <reply name="Reply1" partnerLink="PartnerLink1" operation="solicitarViaje" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLSolicitar" portType="tns:RestInboundPortType" variable="SolicitarViajeOutSALIDA"/>
+    </sequence>
+</process>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<process
+    name="bpelPiloto"
+    targetNamespace="http://enterprise.netbeans.org/bpel/BpelModule/bpelPiloto"
+    xmlns:tns="http://enterprise.netbeans.org/bpel/BpelModule/bpelPiloto"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
+    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
+    xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:sxnmp="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/NMProperty">
+    <import namespace="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLPiloto" location="Archivos/WSDLPiloto.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaPiloto" location="Archivos/llamadaPiloto.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <partnerLinks>
+        <partnerLink name="salidaAvisoPiloto" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaPiloto" partnerLinkType="tns:RestOutboundWSDL" partnerRole="RestOutboundPortTypeRole"/>
+        <partnerLink name="avisoPilotoPL" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLPiloto" partnerLinkType="tns:RestInboundWSDL" myRole="RestInboundPortTypeRole"/>
+    </partnerLinks>
+    <variables>
+        <variable name="AvisoPilotoOutSALIDA" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLPiloto" messageType="tns:avisoPilotoResponse"/>
+        <variable name="LlamadaPilotoOutInvoker" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaPiloto" messageType="tns:llamadaPilotoResponse"/>
+        <variable name="LlamadaPilotoInInvoker" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaPiloto" messageType="tns:llamadaPilotoRequest"/>
+        <variable name="AvisoPilotoIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLPiloto" messageType="tns:avisoPilotoRequest"/>
+    </variables>
+    <sequence>
+        <receive name="Receive1" createInstance="yes" partnerLink="avisoPilotoPL" operation="avisoPiloto" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLPiloto" portType="tns:RestInboundPortType" variable="AvisoPilotoIn"/>
+        <assign name="Assign2">
+            <copy>
+                <from variable="AvisoPilotoIn" sxnmp:nmProperty="org.glassfish.openesb.rest.params"/>
+                <to variable="LlamadaPilotoInInvoker" sxnmp:nmProperty="org.glassfish.openesb.rest.params"/>
+            </copy>
+            <copy>
+                <from>''</from>
+                <to variable="LlamadaPilotoInInvoker" part="part1"/>
+            </copy>
+        </assign>
+        <invoke name="InvokePiloto" partnerLink="salidaAvisoPiloto" operation="llamadaPiloto" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/llamadaPiloto" portType="tns:RestOutboundPortType" inputVariable="LlamadaPilotoInInvoker" outputVariable="LlamadaPilotoOutInvoker"/>
+        <assign name="Assign1">
+            <copy>
+                <from variable="LlamadaPilotoOutInvoker" part="part1"/>
+                <to variable="AvisoPilotoOutSALIDA" part="part1"/>
+            </copy>
+        </assign>
+        <reply name="Reply1" partnerLink="avisoPilotoPL" operation="avisoPiloto" xmlns:tns="http://j2ee.netbeans.org/wsdl/BpelModule/Archivos/WSDLPiloto" portType="tns:RestInboundPortType" variable="AvisoPilotoOutSALIDA"/>
+    </sequence>
+</process>
